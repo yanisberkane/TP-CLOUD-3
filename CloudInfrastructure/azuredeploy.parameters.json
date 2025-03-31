@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "VaultName": {
+      "value": "beryaniKeyVault"
+    },
+    "AppConfigName": {
+      "value": "beryaniAppConfiguration"
+    },
+    "LogAnalyticsName": {
+      "value": "LogAnalytics"
+    },
+    "ApplicationInsightName": {
+      "value": "ApplicationInsights"
+    },
+    "ServiceBusName": {
+      "value": "beryaniSb"
+    },
+    "NoSQLname": {
+      "value": "beryanicosmos"
+    },
+    "storageAccountName": {
+      "value": "beryaniblobstore"
+    },
+    "storageBlobContainerName1": {
+      "value": "unvalidated"
+    },
+    "storageBlobContainerName2": {
+      "value": "validated"
+    },
+    "accountType": {
+      "value": "Standard_LRS"
+    },
+    "kind": {
+      "value": "StorageV2"
+    },
+    "minimumTlsVersion": {
+      "value": "TLS1_2"
+    },
+    "supportsHttpsTrafficOnly": {
+      "value": true
+    },
+    "allowBlobPublicAccess": {
+      "value": true
+    },
+    "allowSharedKeyAccess": {
+      "value": true
+    },
+    "defaultOAuth": {
+      "value": false
+    },
+    "accessTier": {
+      "value": "Hot"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "allowCrossTenantReplication": {
+      "value": false
+    },
+    "networkAclsBypass": {
+      "value": "AzureServices"
+    },
+    "networkAclsDefaultAction": {
+      "value": "Allow"
+    },
+    "networkAclsIpRules": {
+      "value": []
+    },
+    "dnsEndpointType": {
+      "value": "Standard"
+    },
+    "largeFileSharesState": {
+      "value": "Enabled"
+    },
+    "keySource": {
+      "value": "Microsoft.Storage"
+    },
+    "encryptionEnabled": {
+      "value": true
+    },
+    "keyTypeForTableAndQueueEncryption": {
+      "value": "Account"
+    },
+    "infrastructureEncryptionEnabled": {
+      "value": false
+    },
+    "AzureAdClientId": {
+      "value": "ebcf6444-9597-4912-8dc8-2acb18850dda"
+    },
+    "AzureAdDomainName": {
+      "value": "yanisberkaneoutlook.onmicrosoft.com"
+    },
+    "ContentSafetyname": {
+      "value": "beryaniContentSafety"
+    },
+    "resourceGroupName": {
+      "value": "beryani"
+    },
+    "sku": {
+      "value": "F0"
+    },
+    "tagValues": {
+      "value": {}
+    },
+    "virtualNetworkType": {
+      "value": "None"
+    },
+    "vnet": {
+      "value": {}
+    },
+    "ipRules": {
+      "value": []
+    },
+    "identity": {
+      "value": {
+        "type": "SystemAssigned"
+      }
+    },
+    "privateEndpoints": {
+      "value": []
+    },
+    "privateDnsZone": {
+      "value": "[$item.privateDnsZoneConfiguration.integrateWithPrivateDnsZone]"
+    },
+    "isCommitmentPlanForDisconnectedContainerEnabled": {
+      "value": false
+    },
+    "commitmentPlanForDisconnectedContainer": {
+      "value": {
+        "current": {
+          "count": 9
+        },
+        "hostingModel": "DisconnectedContainer",
+        "planType": "Lenovo",
+        "autoRenew": true
+      }
+    }
+
+  }
+}

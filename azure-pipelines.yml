@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool: "default"
+
+variables:
+- name: RG
+  value: 'beryani'
+- name: RG_Location
+  value: 'eastus'
+- name: Vault
+  value: 'beryaniKeyVault'
+- name: AppConfig
+  value: 'beryaniAppConfiguration'
+- name: LogAnalytics
+  value: 'LogAnalyticsName'
+- name: InfrastructureFolder
+  value: 'CloudInfrastructure'
+- name: ApplicationInsight
+  value: 'ApplicationInsight'
+- name: BlobName
+  value: 'beryaniblobstore'
+- name: BlobContainer1
+  value: 'unvalidated'
+- name: BlobContainer2
+  value: 'validated'
+- name: SBusName
+  value: 'beryaniSb'
+- name: CosmosDBName
+  value: 'beryanicosmo'
+- name: ContentName
+  value: 'beryaniContentSafety'
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: ARM Deployment
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: 'Azure subscription 1(09197cde-6f4c-4d1e-bcb6-f215f762650e)'
+      subscriptionId: '09197cde-6f4c-4d1e-bcb6-f215f762650e'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: '$(RG)'
+      location: '$(RG_Location)'
+      templateLocation: 'Linked artifact'
+      csmFile: '$(Build.SourcesDirectory)\$(InfrastructureFolder)\azuredeploy.json'
+      csmParametersFile: '$(Build.SourcesDirectory)\$(InfrastructureFolder)\azuredeploy.parameters.json'
+      overrideParameters: '-ContentSafetyname $(ContentName) -NoSQLname $(CosmosDBName) -ServiceBusName $(SBusName) -location $(RG_Location) -VaultName $(Vault) -AppConfigName $(AppConfig) -LogAnalyticsName $(LogAnalytics) -ApplicationInsightName $(ApplicationInsight) -storageAccountName $(BlobName) -storageBlobContainerName1 $(BlobContainer1) -storageBlobContainerName2 $(BlobContainer2)'
+      deploymentMode: 'Incremental'
+      deploymentOutputs: 'Deployment1'
+  
+  - script: |
+      echo $(Deployment1)
