@@ -14,9 +14,7 @@
   <ItemGroup>
     <Compile Include="..\MVC\Business\BlobController.cs" Link="Business\BlobController.cs" />
     <Compile Include="..\MVC\Business\ServiceBusController.cs" Link="Business\ServiceBusController.cs" />
-    <Compile Include="..\MVC\Data\ApplicationDbContextInMemory.cs" Link="Data\ApplicationDbContextInMemory.cs" />
     <Compile Include="..\MVC\Data\ApplicationDbContextNoSQL.cs" Link="Data\ApplicationDbContextNoSQL.cs" />
-    <Compile Include="..\MVC\Data\ApplicationDbContextSQL.cs" Link="Data\ApplicationDbContextSQL.cs" />
     <Compile Include="..\MVC\Models\ApplicationConfiguration.cs" Link="Models\ApplicationConfiguration.cs" />
     <Compile Include="..\MVC\Models\ApplicationFeatures.cs" Link="Models\ApplicationFeatures.cs" />
     <Compile Include="..\MVC\Models\Comment.cs" Link="Models\Comment.cs" />

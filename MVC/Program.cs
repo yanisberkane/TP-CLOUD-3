@@ -97,24 +97,9 @@ builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((mo
 });
 
 
-// Ajouter la BD ( SQL ou NoSQL )
-switch (builder.Configuration.GetValue<string>("DatabaseConfiguration"))
-{
-    case "SQL":
-        builder.Services.AddDbContext<ApplicationDbContextSQL>();
-        builder.Services.AddScoped<IRepository, EFRepositorySQL>();
-        break;
-
-    case "NoSQL":
-        builder.Services.AddDbContext<ApplicationDbContextNoSQL>();
-        builder.Services.AddScoped<IRepository, EFRepositoryNoSQL>();
-        break;
-
-    case "InMemory":
-        builder.Services.AddDbContext<ApplicationDbContextInMemory>();
-        builder.Services.AddScoped<IRepository, EFRepositoryInMemory>();
-        break;
-}
+// Ajouter la BD NoSQL
+builder.Services.AddDbContext<ApplicationDbContextNoSQL>();
+builder.Services.AddScoped<IRepository, EFRepositoryNoSQL>();
 
 // Ajouter le BlobController du BusinessLayer dans nos Injection de d�pendance
 builder.Services.AddScoped<BlobController>();
@@ -139,26 +124,11 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// Configuration de la BD ( SQL ou NoSQL )
-switch (builder.Configuration.GetValue<string>("DatabaseConfiguration"))
+// Configuration de la BD NoSQL
+using (var scope = app.Services.CreateScope())
 {
-    case "SQL":
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContextSQL>();
-
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.Migrate();
-        }
-        break;
-
-    case "NoSQL":
-        using (var scope = app.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContextNoSQL>();
-            await context.Database.EnsureCreatedAsync();
-        }
-        break;
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContextNoSQL>();
+    await context.Database.EnsureCreatedAsync();
 }
 
 // Utilise le middleware de AppConfig pour rafraichir la configuration dynamique.

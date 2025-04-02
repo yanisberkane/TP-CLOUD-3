@@ -60,24 +60,10 @@ builder.Services.AddOpenTelemetry().UseAzureMonitor(options =>
 });
 
 //Add DbContext
-// Ajouter la BD ( SQL ou NoSQL )
-switch (builder.Configuration.GetValue<string>("DatabaseConfiguration"))
-{
-    case "SQL":
-        builder.Services.AddDbContext<ApplicationDbContextSQL>();
-        builder.Services.AddScoped<IRepositoryAPI, EFRepositoryAPISQL>();
-        break;
+// Ajouter la BD NoSQL
+builder.Services.AddDbContext<ApplicationDbContextNoSQL>();
+builder.Services.AddScoped<IRepositoryAPI, EFRepositoryAPINoSQL>();
 
-    case "NoSQL":
-        builder.Services.AddDbContext<ApplicationDbContextNoSQL>();
-        builder.Services.AddScoped<IRepositoryAPI, EFRepositoryAPINoSQL>();
-        break;
-
-    case "InMemory":
-        builder.Services.AddDbContext<ApplicationDbContextInMemory>();
-        builder.Services.AddScoped<IRepositoryAPI, EFRepositoryAPIInMemory>();
-        break;
-}
 // Ajouter le service pour Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -87,7 +73,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-// Ajouter le BlobController du BusinessLayer dans nos Injection de dépendance
+// Ajouter le BlobController du BusinessLayer dans nos Injection de dï¿½pendance
 builder.Services.AddScoped<BlobController>();
 
 // Ajouter le ServiceBusController du BsinessLayer dans nos Injection ..
@@ -96,25 +82,11 @@ builder.Services.AddScoped<ServiceBusController>();
 var app = builder.Build();
 
 // Configuration de la BD ( SQL ou NoSQL )
-switch (builder.Configuration.GetValue<string>("DatabaseConfiguration"))
+
+using (var scope = app.Services.CreateScope())
 {
-    case "SQL":
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContextSQL>();
-
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.Migrate();
-        }
-        break;
-
-    case "NoSQL":
-        using (var scope = app.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContextNoSQL>();
-            //await context.Database.EnsureCreatedAsync();
-        }
-        break;
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContextNoSQL>();
+    //await context.Database.EnsureCreatedAsync();
 }
 
 // Configuration des services Swagger
@@ -130,7 +102,7 @@ app.MapGet("/Posts/", async (IRepositoryAPI repo) => await repo.GetAPIPostsIndex
 app.MapGet("/Posts/{id}", async (IRepositoryAPI repo, Guid id) => await repo.GetAPIPost(id));
 
 // https://andrewlock.net/reading-json-and-binary-data-from-multipart-form-data-sections-in-aspnetcore/
-// J'ai laisser cette fonction la car je voulais m'assurer de la séparation des concern, sinon j'aurais ajouté de la logique business dans le data layer.
+// J'ai laisser cette fonction la car je voulais m'assurer de la sï¿½paration des concern, sinon j'aurais ajoutï¿½ de la logique business dans le data layer.
 app.MapPost("/Posts/Add", async (IRepositoryAPI repo,  IFormFile Image, HttpRequest request, BlobController blob, ServiceBusController sb) =>
 {
     try
@@ -143,7 +115,7 @@ app.MapPost("/Posts/Add", async (IRepositoryAPI repo,  IFormFile Image, HttpRequ
         // Sauvegarde du post pour avoir l'Id
         var Result = await repo.CreateAPIPost(Post);
 
-        // Si créer, envoyer dans les services bus
+        // Si crï¿½er, envoyer dans les services bus
         if (Result.Result is Created<PostReadDTO> CreatedResult)
         {
             PostReadDTO postReadDTO = CreatedResult.Value!;
@@ -172,7 +144,7 @@ app.MapPost("/Comments/Add", async (IRepositoryAPI repo, CommentCreateDTO commen
 {
     var Result = await repo.CreateAPIComment(commentDTO);
 
-    // Si créer, envoyer dans les services bus
+    // Si crï¿½er, envoyer dans les services bus
     if (Result.Result is Created<CommentReadDTO> CreatedResult)
     {
         CommentReadDTO commentReadDTO = CreatedResult.Value!;
