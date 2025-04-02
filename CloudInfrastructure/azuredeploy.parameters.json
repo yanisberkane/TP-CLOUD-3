@@ -139,7 +139,9 @@
         "planType": "Lenovo",
         "autoRenew": true
       }
+    },
+    "eh_namespaceName": {
+      "value": "beryatp3"
     }
-
   }
 }

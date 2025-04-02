@@ -149,6 +149,9 @@
     "uniqueId": {
       "defaultValue": "[newGuid()]",
       "type": "String"
+    },
+    "eh_namespaceName": {
+      "type": "String"
     }
   },
   "variables": {
@@ -1051,6 +1054,102 @@
       "tags": {
         "defaultExperience": "Core (SQL)",
         "hidden-cosmos-mmspecial": ""
+      }
+    },
+    // EVENT HUB
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[parameters('eh_namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+          "name": "Standard",
+          "tier": "Standard",
+          "capacity": 1
+      },
+      "properties": {
+          "isAutoInflateEnabled": false,
+          "maximumThroughputUnits": 0,
+          "zoneRedundant": true,
+          "minimumTlsVersion": "1.2",
+          "disableLocalAuth": false,
+          "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[concat(parameters('eh_namespaceName'), '/', parameters('eh_namespaceName'), 'eventhub')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.EventHub/namespaces', parameters('eh_namespaceName'))]"
+      ],
+      "properties": {
+          "messageTimestampDescription": {
+              "timestampType": "LogAppend"
+          },
+          "retentionDescription": {
+              "cleanupPolicy": "Delete",
+              "retentionTimeInHours": 1
+          },
+          "messageRetentionInDays": 1,
+          "partitionCount": 1,
+          "status": "Active"
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/authorizationrules",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[concat(parameters('eh_namespaceName'), '/RootManageSharedAccessKey')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.EventHub/namespaces', parameters('eh_namespaceName'))]"
+      ],
+      "properties": {
+          "rights": [
+              "Listen",
+              "Manage",
+              "Send"
+          ]
+      }
+    },
+    // Store the connection string in the Key Vault
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-04-01-preview",
+      //semi hardcoded
+      "name": "[format('{0}/{1}', parameters('VaultName'), '/ConnectionStringEventHub')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('eh_namespaceName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('eh_namespaceName'), 'RootManageSharedAccessKey')]",
+        // app config
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('AppConfigName'))]"
+      ],
+      //This provide instrumentation key
+      "properties": {
+        "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('eh_namespaceName'), 'RootManageSharedAccessKey'), '2024-05-01-preview').primaryConnectionString]",
+        "contentType": "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+      }
+    },
+    // Store the connection string in the App Configuration
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2024-05-01",
+      // semi hardcoded
+      "name": "[format('{0}/{1}', parameters('AppConfigName'), 'ConnectionStrings:EventHub')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults/secrets',  parameters('VaultName'), 'ConnectionStringEventHub')]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('eh_namespaceName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('eh_namespaceName'), 'RootManageSharedAccessKey')]",
+        // app config
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('AppConfigName'))]"
+      ],
+      "properties": {
+        "value": "[concat('{\"uri\": \"',reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('VaultName'), 'ConnectionStringEventHub'), '2024-04-01-preview').secretUriWithVersion, '\"}')]",
+        "contentType": "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
       }
     }
   ],
