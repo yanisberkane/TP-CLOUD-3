@@ -8,7 +8,7 @@
 	<NoWarn>$(NoWarn);1591</NoWarn>
 	<UserSecretsId>2b030199-a576-447f-9980-dffacc38b23e</UserSecretsId>
 	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	<ApplicationInsightsResourceId>/subscriptions/09197cde-6f4c-4d1e-bcb6-f215f762650e/resourceGroups/beryani/providers/microsoft.insights/components/ApplicationInsight</ApplicationInsightsResourceId>
+	<ApplicationInsightsResourceId>/subscriptions/09197cde-6f4c-4d1e-bcb6-f215f762650e/resourceGroups/beryatp3/providers/microsoft.insights/components/ApplicationInsight</ApplicationInsightsResourceId>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -49,10 +49,6 @@
 
   <ItemGroup>
     <Folder Include="Business\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SharedEvents\SharedEvents.csproj" />
   </ItemGroup>
 
 </Project>

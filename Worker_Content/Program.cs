@@ -5,7 +5,6 @@ using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using MVC.Business;
-using Worker_Content.Services;
 
 namespace Worker_Content
 {
@@ -17,7 +16,7 @@ namespace Worker_Content
             var builder = Host.CreateApplicationBuilder(args);
             builder.Services.AddHostedService<Worker>();
 
-            // Code diffï¿½rent pour le Azure.Data.AppConfiguration
+            // Code différent pour le Azure.Data.AppConfiguration
             string AppConfigEndPoint = builder.Configuration.GetValue<string>("Endpoints:AppConfiguration")!;
 
             // Option pour le credential recu des variables d'environement.
@@ -29,13 +28,13 @@ namespace Worker_Content
                 ExcludeEnvironmentCredential = false
             });
 
-            // Crï¿½ation du Client App Config
+            // Création du Client App Config
             ConfigurationClient appConfigClient = new ConfigurationClient(new Uri(AppConfigEndPoint), defaultAzureCredential);
             ConfigurationSetting contentsafetyEndPoint = appConfigClient.GetConfigurationSetting("Endpoints:ContentSafety");
             ConfigurationSetting container1 = appConfigClient.GetConfigurationSetting("ApplicationConfiguration:UnvalidatedBlob");
             ConfigurationSetting container2 = appConfigClient.GetConfigurationSetting("ApplicationConfiguration:ValidatedBlob");
 
-            // Crï¿½ation du Client Key Vault
+            // Création du Client Key Vault
             ConfigurationSetting endpointKeyVault = appConfigClient.GetConfigurationSetting("Endpoints:KeyVault");
             SecretClient keyVaultClient = new SecretClient(new Uri(endpointKeyVault.Value), defaultAzureCredential);
 
@@ -56,8 +55,6 @@ namespace Worker_Content
                 options.ContentSafetyKey = contentsafetyKeyVault.Value;
                 options.ContentSafetyEndpoint = contentsafetyEndPoint.Value;
             });
-
-            builder.Services.AddSingleton<EventHubService>(); 
 
             // Application Insight trace/log/metrics
             // https://medium.com/@chuck.beasley/how-to-instrument-a-net-5537ea851763

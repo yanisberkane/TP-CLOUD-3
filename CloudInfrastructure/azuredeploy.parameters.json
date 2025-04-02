@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "eastus"
+      "value": "centralus"
     },
     "VaultName": {
-      "value": "beryaniKeyVault"
+      "value": "beryatp3KeyVault"
     },
     "AppConfigName": {
-      "value": "beryaniAppConfiguration"
+      "value": "beryatp3AppConfiguration"
     },
     "LogAnalyticsName": {
       "value": "LogAnalytics"
@@ -18,13 +18,13 @@
       "value": "ApplicationInsights"
     },
     "ServiceBusName": {
-      "value": "beryaniSb"
+      "value": "beryatp3Sb"
     },
     "NoSQLname": {
-      "value": "beryanicosmos"
+      "value": "beryatp3cosmos"
     },
     "storageAccountName": {
-      "value": "beryaniblobstore"
+      "value": "beryatp3blobstore"
     },
     "storageBlobContainerName1": {
       "value": "unvalidated"
@@ -90,19 +90,19 @@
       "value": false
     },
     "AzureAdClientId": {
-      "value": "ebcf6444-9597-4912-8dc8-2acb18850dda"
+      "value": "b3a6ebd9-f34e-4b23-9ca8-bd40056c383d"
     },
     "AzureAdDomainName": {
-      "value": "yanisberkaneoutlook.onmicrosoft.com"
+      "value": "epitechfr.onmicrosoft.com"
     },
     "ContentSafetyname": {
-      "value": "beryaniContentSafety"
+      "value": "beryatp3ContentSafety"
     },
     "resourceGroupName": {
-      "value": "beryani"
+      "value": "beryatp3"
     },
     "sku": {
-      "value": "F0"
+      "value": "S0"
     },
     "tagValues": {
       "value": {}

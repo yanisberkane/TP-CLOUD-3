@@ -10,13 +10,13 @@ pool: "default"
 
 variables:
 - name: RG
-  value: 'beryani'
+  value: 'beryatp3'
 - name: RG_Location
-  value: 'eastus'
+  value: 'centralus'
 - name: Vault
-  value: 'beryaniKeyVault'
+  value: 'beryatp3KeyVault'
 - name: AppConfig
-  value: 'beryaniAppConfiguration'
+  value: 'beryatp3AppConfiguration'
 - name: LogAnalytics
   value: 'LogAnalyticsName'
 - name: InfrastructureFolder
@@ -24,17 +24,17 @@ variables:
 - name: ApplicationInsight
   value: 'ApplicationInsight'
 - name: BlobName
-  value: 'beryaniblobstore'
+  value: 'beryatp3blobstore'
 - name: BlobContainer1
   value: 'unvalidated'
 - name: BlobContainer2
   value: 'validated'
 - name: SBusName
-  value: 'beryaniSb'
+  value: 'beryatp3Sb'
 - name: CosmosDBName
-  value: 'beryanicosmo'
+  value: 'beryatp3cosmo'
 - name: ContentName
-  value: 'beryaniContentSafety'
+  value: 'beryatp3ContentSafety'
 steps:
   - task: AzureResourceManagerTemplateDeployment@3
     displayName: ARM Deployment

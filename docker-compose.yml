@@ -58,18 +58,6 @@ services:
       mvc:
         condition: service_healthy
 
-  worker_db:
-    build:
-       context: .
-       dockerfile: Worker_DB/Dockerfile
-    env_file:
-      - 'secrets.env'
-    networks:
-        - app_vlan
-    depends_on:
-      mvc:
-        condition: service_healthy
-
 networks:
   app_vlan:
     driver: bridge

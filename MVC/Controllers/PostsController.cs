@@ -1,28 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using MVC.Models;
 using MVC.Data;
 using MVC.Business;
 using Microsoft.AspNetCore.Authorization;
-using SharedEvents.Events;
-using MVC.Services; // ← Add this if EventHubService is inside MVC.Services
 using System.Security.Claims;
 
 namespace MVC.Controllers
 {
-    // [Authorize]
+// [Authorize]
     public class PostsController : Controller
     {
-        private readonly IRepository _repo;
-        private readonly BlobController _blobController;
-        private readonly ServiceBusController _serviceBusController;
-        private readonly EventHubService _eventHub; // ← Injected EventHubService
+        private IRepository _repo;
+        private BlobController _blobController;
+        private ServiceBusController _serviceBusController;
 
-        public PostsController(IRepository repo, BlobController blobController, ServiceBusController serviceBusController, EventHubService eventHub)
+        public PostsController(IRepository repo, BlobController blobController, ServiceBusController serviceBusController)
         {
             _repo = repo;
             _blobController = blobController;
             _serviceBusController = serviceBusController;
-            _eventHub = eventHub;
         }
 
         // GET: Posts
@@ -30,7 +27,7 @@ namespace MVC.Controllers
         {
             List<Post> posts = await _repo.GetPostsIndex(pageNumber, pageSize);
             int totalPosts = await _repo.GetPostsCount();
-            int totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
+            int totalPages = (int)Math.Ceiling(totalPosts/(double)pageSize);
 
             PostIndexViewModel viewModel = new PostIndexViewModel { Posts = posts, CurrentPage = pageNumber, TotalPages = totalPages, PageSize = pageSize };
 
@@ -44,60 +41,57 @@ namespace MVC.Controllers
         }
 
         // POST: Posts/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Category,User,Created,FileToUpload")] PostForm postForm)
         {
+
             try
             {
                 postForm.BlobImage = Guid.NewGuid();
                 postForm.Url = await _blobController.PushImageToBlob(postForm.FileToUpload, (Guid)postForm.BlobImage);
 
+                //retrait de l'erreur du au manque de l'imnage, celle-ci fut ajouter au model de base par notre CopyToAsync.
                 ModelState.Remove("BlobImage");
                 ModelState.Remove("Url");
             }
             catch (ExceptionFilesize)
             {
+                // Fichier trop gros
+                // ajout d'une erreur si le fichier est trop gros
                 ModelState.AddModelError("FileToUpload", "Le fichier est trop gros.");
             }
 
             if (ModelState.IsValid)
             {
-                // Send original service bus messages
+                await _repo.Add(postForm);
+
+                // Envoie des messages dans le Service Bus
                 await _serviceBusController.SendImageToResize((Guid)postForm.BlobImage!, postForm.Id);
                 await _serviceBusController.SendContentImageToValidation((Guid)postForm.BlobImage!, Guid.NewGuid(), postForm.Id);
 
-                // Send PostCreatedEvent to Event Hub
-                var postCreatedEvent = new PostCreatedEvent
-                {
-                    PostId = postForm.Id,
-                    Title = postForm.Title,
-                    Category = postForm.Category.ToString(),
-                    User = postForm.User,
-                    Created = postForm.Created,
-                    BlobImage = postForm.BlobImage!.Value,
-                    Url = postForm.Url!
-                };
-
-                await _eventHub.SendEventAsync(postCreatedEvent);
-
                 return RedirectToAction(nameof(Index));
             }
-
             return View(postForm);
         }
 
         [HttpPost]
+        // Function pour ajouter un like a un Post
         public async Task<ActionResult> Like(Guid id)
         {
             await _repo.IncrementPostLike(id);
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
+        // Fonction pour ajouter un dislike a un Post
         public async Task<ActionResult> Dislike(Guid id)
         {
             await _repo.IncrementPostDislike(id);
+
             return RedirectToAction("Index");
         }
     }

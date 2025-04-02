@@ -254,7 +254,7 @@
       "apiVersion": "2024-04-01-preview",
       //semi hardcoded
       "name": "[concat(parameters('VaultName'), '/ConnectionStringBlob')]",
-      "location": "eastus",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
@@ -273,7 +273,7 @@
       "apiVersion": "2024-04-01-preview",
       //semi hardcoded
       "name": "[concat(parameters('VaultName'), '/ConnectionStringSB')]",
-      "location": "eastus",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('ServiceBusName'))]",
@@ -292,7 +292,7 @@
       "apiVersion": "2024-04-01-preview",
       //semi hardcoded
       "name": "[concat(parameters('VaultName'), '/ConnectionStringContentSafety')]",
-      "location": "eastus",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
         "[parameters('ContentSafetyname')]",
@@ -311,7 +311,7 @@
       "apiVersion": "2024-04-01-preview",
       //semi hardcoded
       "name": "[concat(parameters('VaultName'), '/ConnectionStringCosmosDB')]",
-      "location": "eastus",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', parameters('VaultName'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('NoSQLname'))]",
@@ -726,7 +726,7 @@
       "type": "Microsoft.ServiceBus/namespaces/queues",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('ServiceBusName'), '/imageresizemessage')]",
-      "location": "canadacentral",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('ServiceBusName'))]"
       ],
@@ -750,7 +750,7 @@
       "type": "Microsoft.ServiceBus/namespaces/queues",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('ServiceBusName'), '/contentsafetymessage')]",
-      "location": "canadacentral",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('ServiceBusName'))]"
       ],
@@ -774,7 +774,7 @@
       "type": "Microsoft.ServiceBus/namespaces/authorizationrules",
       "apiVersion": "2023-01-01-preview",
       "name": "[concat(parameters('ServiceBusName'), '/RootManageSharedAccessKey')]",
-      "location": "canadacentral",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', parameters('ServiceBusName'))]"
       ],

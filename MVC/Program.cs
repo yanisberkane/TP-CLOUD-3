@@ -19,8 +19,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.ApplicationInsights.DependencyCollector;
 
-using MVC.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -123,9 +121,6 @@ builder.Services.AddScoped<BlobController>();
 
 // Ajouter le ServiceBusController du BsinessLayer dans nos Injection ..
 builder.Services.AddScoped<ServiceBusController>();
-
-// Ajouter le EventHubController du BsinessLayer dans nos Injection ..
-builder.Services.AddSingleton<EventHubService>();
 
 // Service d'identité avec AzureAD
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)

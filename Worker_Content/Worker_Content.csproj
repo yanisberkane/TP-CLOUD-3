@@ -17,7 +17,6 @@
     <PackageReference Include="Azure.AI.ContentSafety" Version="1.0.0" />
     <PackageReference Include="Azure.Data.AppConfiguration" Version="1.5.0" />
     <PackageReference Include="Azure.Identity" Version="1.13.1" />
-    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.11.6" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
@@ -35,9 +34,5 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Business\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SharedEvents\SharedEvents.csproj" />
   </ItemGroup>
 </Project>
